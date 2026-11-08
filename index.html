@@ -252,7 +252,7 @@
           <div class="gico">🕵</div><div class="gt">谁是卧底</div><div class="gd">3~8 人 · 私密词对，投票找出卧底</div>
         </div>
         <div class="gamecard" onclick="chooseGame('picpass', this)">
-          <div class="gico">📓</div><div class="gt">传画接龙</div><div class="gd">写→画→猜接力，最后逐本回放</div>
+          <div class="gico">📓</div><div class="gt">传画接龙</div><div class="gd">2~8 人 · 2 人轮流链 / 多人接力回放</div>
         </div>
       </div>
       <div id="transportPanel" style="display:none;margin-top:14px">
@@ -265,10 +265,10 @@
         <div class="hint">
           <div id="multiOnlyHint" style="display:none;background:#fff7e6;border:1px solid #ffd86b;border-radius:12px;padding:10px 12px;color:#5c4a10;line-height:1.6;margin-bottom:8px"></div>
           <b>✅ 推荐「在线」</b>：房主点「创建房间」，把<b>链接或 6 位房间号</b>发给好友；好友点链接即自动加入（或输房间号），<b>不用互相传文件、不用复制长码</b>。两端只要能上网就行，4G / WiFi / 热点都可以。<br>
-          <b>👥 三款多人游戏</b>：<b>你画我猜</b>（1 人画、其余抢答）、<b>谁是卧底</b>（私密词对 + 投票）、<b>传画接龙</b>（写→画→猜链式接力），最多 <b>8 人</b>同房；把同一条链接发给所有朋友即可。同词相遇 / 词语接龙 / 海龟汤仍固定 2 人。<br>
+          <b>👥 三款多人游戏</b>：<b>你画我猜</b>（1 人画、其余抢答）、<b>谁是卧底</b>（私密词对 + 投票）、<b>传画接龙</b>（写→画→猜接力，2 人是双人轮流链、3 人以上每人一本），最多 <b>8 人</b>同房；把同一条链接发给所有朋友即可。同词相遇 / 词语接龙 / 海龟汤仍固定 2 人。<br>
           <b>「离线/热点」</b>：完全不依赖网络，双方各发一次握手码即可连上，适合无网 / 纯热点场景；需要两台手机都先有本文件（离线模式为 2 人）。<br>
           在线模式的对局消息经由本页自带的房间服务转发；离线模式仍是两台手机点对点直连，不经任何服务。
-          <div id="homeRelayHint" style="display:none;color:#b45309;margin-top:6px"><b>当前是本地文件打开</b>，在线房间需要已发布的网址；本地文件请改用「离线/热点」。</div>
+          <div id="homeRelayHint" style="display:none;color:#b45309;margin-top:6px"><b>当前不是已发布网址</b>，在线房间服务可能不可用；请打开官方网址，或改用「离线/热点」。</div>
         </div>
       </div>
     </div>
@@ -555,7 +555,7 @@
   <section id="screen-picpass-config" class="screen">
     <div class="logo"><h1 style="font-size:24px">传画接龙</h1></div>
     <div class="card center">
-      <p class="muted">3~8 人：每人先写一句开头，然后<b>写 → 画 → 猜</b>按座位依次传递，每人只看到上一步，最后逐本回放「原意怎么跑偏」。</p>
+      <p class="muted">2~8 人：<b>2 人</b>玩「双人轮流链」——两人共接一条链，写 → 画 → 猜交替；<b>3 人以上</b>每人各写一句起句，按座位依次传递。每人只看到上一步，最后回放「原意怎么跑偏」。</p>
       <div class="memberbox" id="picConfigMembers"></div>
       <label class="fld">接力轮数</label>
       <div class="themegrid" id="picRoundsGrid"></div>
@@ -564,7 +564,7 @@
       <div class="err" id="picCfgErr"></div>
       <button class="btn" onclick="startPic()">开始游戏</button>
       <button class="btn soft" onclick="show('screen-lobby')">返回</button>
-      <div class="rule"><b>玩法</b>：每人写一句开头 → 传给下一位<b>画出来</b> → 再传给下一位<b>写下猜到的话</b> → 如此交替若干轮。每一步只给你看上一个人的内容，看不到更早的。全部完成后按顺序<b>逐本回放整条链</b>，看看最初那句话被传成了什么。<br>画作以笔迹数据传递，回放时可逐帧查看；中途加入的朋友，点「再来一局」即可一起玩。</div>
+      <div class="rule"><b>2 人轮流链</b>：两人共接一条链，A 写起句 → B 画出来 → A 看图续写 → B 再画……每步只看上一步，最后一起回放整条链。<br><b>3 人以上</b>：每人写一句开头 → 传给下一位<b>画出来</b> → 再传给下一位<b>写下猜到的话</b> → 交替若干轮，最后逐本回放，看最初那句话被传成了什么。<br>画作以笔迹数据传递，回放时重新画出；中途加入的朋友会自动重开一局一起玩。</div>
     </div>
   </section>
 
@@ -2971,8 +2971,10 @@ function chooseGame(g, el){
   if(hint){
     hint.style.display=multiOnly?'block':'none';
     hint.innerHTML=multiOnly?(window.WB_NO_RELAY
-      ? '⚠️ <b>「'+GAME_NAMES[g]+'」需要 3 人以上在线房间</b>。本文件是纯离线双人版，请打开已发布网址（官方链接或 GitHub Pages）后选「创建房间（在线）」。'
-      : '👥 <b>「'+GAME_NAMES[g]+'」需要 3 人以上</b>：请点「创建房间（在线）」，把链接发给所有朋友；离线 / 热点只有 2 人，已停用。'):'';
+      ? '⚠️ <b>「'+GAME_NAMES[g]+'」需要在线房间</b>。本文件是纯离线双人版，请打开已发布网址（官方链接或 GitHub Pages）后选「创建房间（在线）」。'
+      : (g==='picpass'
+        ? '👥 <b>传画接龙 2~8 人</b>：<b>2 人</b>玩「双人轮流链」，两人共接一条链，写 → 画 → 猜交替；<b>3 人以上</b>每人各开一本按座位接力。请点「创建房间（在线）」，离线 / 热点双人版不支持。'
+        : '👥 <b>「'+GAME_NAMES[g]+'」需要 3 人以上</b>：请点「创建房间（在线）」，把链接发给所有朋友；离线 / 热点只有 2 人，已停用。')):'';
   }
   document.querySelectorAll('#transportPanel button').forEach(b=>{
     const oc=b.getAttribute('onclick')||'';
@@ -3053,6 +3055,29 @@ function setConn(state,text){ const d=$('connDot'); d.className='dot'+(state==='
    走标准 HTTPS 443，手机任何网络都不会拦截。长轮询是普通短 HTTP 请求，
    不依赖 WebSocket / SSE 流式转发，反向代理缓冲也不会卡住。
    若页面是本地 file:// 打开（没有这个接口），自动回退到文件末尾的公共 MQTT + WebRTC。 */
+/* 公开入口：不管从官方平台、GitHub Pages、本地文件或本机预览打开，
+   在线房间都连同一个云端服务，这样「把链接发给朋友点开就进」在任何入口都成立。 */
+const PUBLIC_SITE='https://luckywangyi.github.io/moxi-games/';
+const PUBLIC_RELAY='https://moxi-games.app.workbuddy.host/api/';
+const PUBLIC_SHARECODE='6V72QIV5WE';
+function isFilePage(){ return location.protocol==='file:'; }
+function isLocalPreview(){ return /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(location.hostname); }
+function relayCandidates(){
+  const cfg=window.WB_PAGES_CONFIG;
+  if(cfg && cfg.relayBase) return [cfg.relayBase];
+  if(isFilePage()) return [PUBLIC_RELAY];
+  const list=['./api/'];
+  // 本机静态预览没有 /api/ 时，回退到云端，避免永远卡在「连接中…」
+  if(isLocalPreview()) list.push(PUBLIC_RELAY);
+  return list;
+}
+function currentRelayBase(){
+  const cfg=window.WB_PAGES_CONFIG;
+  return App._relayBase || (cfg && cfg.relayBase) || (isFilePage()?PUBLIC_RELAY:'./api/');
+}
+function effectiveShareCode(base){
+  return shareCode() || (base===PUBLIC_RELAY?PUBLIC_SHARECODE:'');
+}
 function genSid(){ return 's'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); }
 /* 托管平台的分享链接带 ?sharecode= 访问凭证。所有 API 请求都原样带上它，
    这样即使浏览器禁用了 cookie 也能通过网关校验。本地自跑时没有该参数，无副作用。 */
@@ -3067,10 +3092,10 @@ function shareCode(){
   }catch(e){ return (window.WB_PAGES_CONFIG&&window.WB_PAGES_CONFIG.sharecode)||''; }
 }
 function apiPath(name, params){
+  const base=currentRelayBase();
   const p=new URLSearchParams(params||{});
-  const sc=shareCode(); if(sc) p.set('sharecode', sc);
+  const sc=effectiveShareCode(base); if(sc) p.set('sharecode', sc);
   const q=p.toString();
-  const base=(window.WB_PAGES_CONFIG&&window.WB_PAGES_CONFIG.relayBase)||'./api/';
   return base+name+(q?'?'+q:'');
 }
 function shareLinkPrefix(){
@@ -3085,15 +3110,20 @@ function fetchT(url, opts, ms){
 async function relayAvailable(){
   // 探测成功过一次就记住，后续重连不再重复探测、也不会因瞬时断网被误判
   if(App._relayKnown===true) return true;
-  // 本地文件直接判定为无房间服务，避免 file:// 下必然失败的 CORS 探测噪音
-  if(location.protocol==='file:' || !/^https?:$/.test(location.protocol)) return false;
-  for(let i=0;i<3;i++){
-    try{
-      const r=await fetchT(apiPath('health'),{cache:'no-store'},2500);
-      if(r.ok){ const j=await r.json(); if(j && j.relay){ App._relayKnown=true; return true; } }
-    }catch(e){}
-    // 刚点「创建房间」就切微信发链接时，首个探测常被系统打断；短暂重试即可
-    if(i<2) await new Promise(res=>setTimeout(res,500));
+  if(!/^(https?|file):$/.test(location.protocol)) return false;
+  // 依次尝试：静态镜像注入的绝对地址 / 本页同域 /api/ / 云端公开入口。
+  // 本地文件与静态预览因此也能连上云端房间，不必退化到公共 MQTT 非标端口。
+  for(const base of relayCandidates()){
+    for(let i=0;i<2;i++){
+      try{
+        const sc=effectiveShareCode(base);
+        const url=base+'health?sharecode='+encodeURIComponent(sc)+'&_='+Date.now();
+        const r=await fetchT(url,{cache:'no-store'},2500);
+        if(r.ok){ const j=await r.json(); if(j && j.relay){ App._relayKnown=true; App._relayBase=base; return true; } }
+      }catch(e){}
+      // 刚点「创建房间」就切微信发链接时，首个探测常被系统打断；短暂重试即可
+      if(i<1) await new Promise(res=>setTimeout(res,500));
+    }
   }
   return false;
 }
@@ -3250,23 +3280,29 @@ async function startOnlineConnection(){
   $('lobbyErr').textContent='';
   // 已发布的网页必然自带房间服务：探测因「刚切微信/锁屏」短暂失败时也要坚持走 relay，
   // 绝不能掉回公共 MQTT + WebRTC —— 非标端口在手机网络里基本连不上，会永久卡在「连接中」。
-  const hosted = /^https?:$/.test(location.protocol) &&
-    !/^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(location.hostname);
+  const hosted = /^https?:$/.test(location.protocol) && !isLocalPreview();
   if(await relayAvailable() || hosted){
     App.transport='relay';
     startRelayConnection(role, roomId);
     return;
   }
   App.transport='webrtc';
-  if(location.protocol==='file:'){
-    $('lobbyErr').textContent='当前是本地文件：在线房间需要已发布的网址。这里正尝试公共信令兜底（可能不稳定），最稳的是点下方「完全无网 / 纯热点？改用离线模式」。';
+  if(isFilePage()){
+    $('lobbyErr').textContent='当前是本地文件且暂时连不上云端房间服务，正在尝试公共信令兜底（可能不稳定）；最稳的是点下方「完全无网 / 纯热点？改用离线模式」，或用官方网址打开本页。';
   }
   startLegacyOnlineConnection(role, roomId);
 }
-/* 本地文件打开时明确提示：在线房间需要已发布的网址 */
+/* 本地文件 / 本机预览时明确说明当前可用的联机方式 */
 (async function(){
-  if(await relayAvailable()) return;
   const h=document.getElementById('homeRelayHint');
+  if(isFilePage()){
+    const ok=await relayAvailable();
+    if(h){ h.style.display='block'; h.innerHTML=ok
+      ? '<b>当前是本地文件打开</b>：在线房间已自动连到云端，建房后把「复制链接」发给好友即可；也可用「离线/热点」零依赖开玩。'
+      : '<b>当前是本地文件打开</b>，且暂时连不上云端房间服务；请打开已发布网址，或改用「离线/热点」。'; }
+    return;
+  }
+  if(await relayAvailable()) return;
   if(h) h.style.display='block';
 })();
 
@@ -3507,23 +3543,30 @@ function copyOff(){ copyText($('offBox').textContent); }
 })();
 
 /* ============ 大厅 / 房主创建 ============ */
+/* 邀请链接始终指向朋友能打开的公开网址：
+   - 已发布平台 / GitHub Pages：用当前地址（带访问凭证）
+   - 本地文件、或地址丢了凭证：用公开的 GitHub Pages 镜像（内置凭证）
+   - 本机预览（自带本地服务）：不给外部链接，明确引导用官方网址 */
+function inviteTarget(){
+  const hosted=/^https?:$/.test(location.protocol) && !isLocalPreview();
+  if(hosted && shareCode()) return location.origin+location.pathname+'?'+shareLinkPrefix();
+  if(isLocalPreview()) return null;
+  return PUBLIC_SITE+'?sharecode='+encodeURIComponent(PUBLIC_SHARECODE)+'&';
+}
 function enterLobby(){
   show('screen-lobby');
   $('lobbyCode').textContent=App.roomId;
-  // 本地文件 / 本机预览时，链接对别人无效 —— 只突出 6 位房间号，避免误导
-  const localPage = (location.protocol==='file:' || /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(location.hostname));
-  // 拿不到访问凭证时，生成的链接别人点开会 403 —— 不展示、不生成二维码，改引导用房间号
-  const noCred = !localPage && !shareLinkPrefix();
-  const link=(location.origin+location.pathname+'?'+shareLinkPrefix()+'room='+App.roomId+'&game='+(App.game||'tongci'));
-  $('lobbyHintTop').textContent = localPage
-    ? '把上面这个 6 位房间号发给好友，好友打开同一个页面后点「加入房间（在线）」输入即可：'
-    : noCred
-      ? '⚠️ 当前地址缺少访问凭证，生成的链接别人打不开。请用官方分享链接重新打开本页；或只发上面 6 位房间号给好友，让好友用官方链接打开后输入：'
+  const t=inviteTarget();
+  const link=t ? t+'room='+encodeURIComponent(App.roomId)+'&game='+encodeURIComponent(App.game||'tongci') : '';
+  $('lobbyHintTop').textContent = !t
+    ? '当前是本机预览，链接对别人无效。请打开官方网址再建房；或把 6 位房间号发给好友，让他用官方网址打开后输入：'
+    : isFilePage()
+      ? '把下面的链接发给好友，对方点开就自动加入（本地文件打开也能在线联机）；也可以只发 6 位房间号：'
       : '把下面的链接发给好友，对方点开就自动加入；若只发 6 位房间号，好友需先打开同一个网址再输入：';
-  $('lobbyLink').textContent = localPage ? '（本地文件：直接发房间号即可）' : (noCred ? '（无法生成可用链接：请用官方分享链接打开本页）' : link);
-  $('lobbyQr').innerHTML = (localPage || noCred) ? '' : makeQR(link,170);
-  $('copyLinkBtn').style.display = (localPage || noCred) ? 'none' : 'block';
-  $('copyLinkBtn').textContent = '复制链接';
+  $('lobbyLink').textContent = t ? link : '（本机预览：请打开官方网址建房后再发链接）';
+  $('lobbyQr').innerHTML = t ? makeQR(link,170) : '';
+  $('copyLinkBtn').style.display = 'block';
+  $('copyLinkBtn').textContent = t ? '复制链接' : '复制官方网址';
   $('copyCodeBtn').style.display = 'block';
   $('lobbyErr').textContent='';
   // 访客不该看到房主的「复制链接 / 复制房间号 / 二维码」邀请区，否则会误以为自己该建房
@@ -3537,7 +3580,7 @@ function enterLobby(){
   }
   if(App.mode==='online'){ startOnlineConnection(); }
 }
-function copyLink(){ copyText($('lobbyLink').textContent); }
+function copyLink(){ copyText(inviteTarget() ? $('lobbyLink').textContent : PUBLIC_SITE); }
 function copyRoomCode(){ copyText(App.roomId||''); }
 /* 在线信令连不上时，一键切到零依赖的离线握手；保留当前所选游戏 */
 function switchToOffline(){
@@ -4561,7 +4604,11 @@ function updateMultiConfigMembers(){
       +'<div style="margin-top:6px">'+tail+'</div>';
   };
   fill('spyConfigMembers',seats.length<3?'⚠️ 至少需要 3 人，请把房间链接再发给朋友。':'✅ 人数足够，房主点「开始游戏」即可。');
-  fill('picConfigMembers',seats.length<3?'⚠️ 至少需要 3 人，请把房间链接再发给朋友。':'✅ 人数足够，每人先写一句开头，然后按座位接力。');
+  fill('picConfigMembers',seats.length<2
+    ? '⚠️ 至少需要 2 人，请把房间链接再发给朋友。'
+    : (seats.length===2
+      ? '✅ 双人轮流链：两人共接一条链，写 → 画 → 猜交替，每步只看上一步，最后一起回放。'
+      : '✅ '+seats.length+' 人接力：每人各写一句起句，按座位依次传递。'));
 }
 
 /* ---------------- 谁是卧底 ---------------- */
@@ -4808,13 +4855,13 @@ function spyOnMemberChange(seats){
 /* ---------------- 传画接龙 ---------------- */
 const PIC_ROUNDS=[2,3,4];
 let picRounds=3, picSecs=60;
-let picState={ host:false, seats:[], rounds:3, secs:60, step:0, books:[], pending:{},
+let picState={ host:false, seats:[], rounds:3, secs:60, step:0, books:[], pending:{}, duo:false,
   over:false, advancing:false, task:null, timerId:null, endTime:0,
   bookNo:0, revealBooks:[], done:0, total:0 };
 let picStrokes=[], picCtx=null, picDrawing=false, picLast=null, picColor='#222', picWidth=4;
 function picReset(){
   clearInterval(picState.timerId);
-  picState={ host:false, seats:[], rounds:3, secs:60, step:0, books:[], pending:{},
+  picState={ host:false, seats:[], rounds:3, secs:60, step:0, books:[], pending:{}, duo:false,
     over:false, advancing:false, task:null, timerId:null, endTime:0,
     bookNo:0, revealBooks:[], done:0, total:0 };
   picStrokes=[];
@@ -4829,39 +4876,47 @@ function picEnterConfig(){
 function startPic(){
   if(!peerReady()){ toast('等好友连上后再开始'); return; }
   const seats=memberSeats();
-  if(seats.length<3){
-    const e=$('picCfgErr'); if(e) e.textContent='传画接龙至少需要 3 人，请把房间链接再发给一位朋友。';
-    toast('至少需要 3 人'); return;
+  if(seats.length<2){
+    const e=$('picCfgErr'); if(e) e.textContent='传画接龙至少需要 2 人，请把房间链接发给朋友。';
+    toast('至少需要 2 人'); return;
   }
   const ce=$('picCfgErr'); if(ce) ce.textContent='';
   App.game='picpass'; picReset();
   const P=picState; P.host=true; P.seats=seats.slice(); P.rounds=picRounds; P.secs=picSecs;
-  P.total=seats.length; P.step=0;
-  P.books=seats.map((s,i)=>({id:i,owner:s,entries:[]}));
-  emitAll({type:'pic_start',game:'picpass',seats:P.seats.slice(),rounds:P.rounds,secs:P.secs,total:P.total});
+  // 2 人 = 双人轮流链：只开一本，两人在写 / 画之间交替；3 人以上 = 每人一本按座位接力
+  P.duo=seats.length===2;
+  P.total=P.duo?1:seats.length; P.step=0;
+  P.books=(P.duo?[seats[0]]:seats).map((s,i)=>({id:i,owner:s,entries:[]}));
+  emitAll({type:'pic_start',game:'picpass',seats:P.seats.slice(),rounds:P.rounds,secs:P.secs,total:P.total,duo:P.duo});
   picBeginStep(0);
 }
 function picApplyStart(msg){
   const P=picState;
   P.seats=(msg.seats||[]).slice(); P.rounds=msg.rounds||3; P.secs=msg.secs||60;
-  P.total=P.seats.length; P.step=0; P.done=0;
+  P.duo=!!msg.duo; P.total=P.duo?1:P.seats.length; P.step=0; P.done=0;
   // 只有房主持有整条链；访客端不建本子，从根上避免提前看到别的内容
-  P.books=P.host?P.seats.map((s,i)=>({id:i,owner:s,entries:[]})):[];
+  P.books=P.host?(P.duo?[{id:0,owner:P.seats[0],entries:[]}]:P.seats.map((s,i)=>({id:i,owner:s,entries:[]}))):[];
   P.pending={}; P.over=false; P.advancing=false; P.task=null; P.revealBooks=[]; P.bookNo=0;
   $('picResult').style.display='none'; $('picBooks').style.display='none';
   $('picBookNav').style.display='none'; $('picFooter').style.display='none';
   $('picBooks').innerHTML='';
   show('screen-picpass');
   picHideWork();
-  $('picTaskHint').textContent='✍️ 起句阶段：每人写一句开头，之后会传给下一位画出来';
+  $('picTaskHint').textContent=P.duo
+    ? '✍️ 双人轮流链：两人共接一条链，写 → 画 → 猜交替，每人只看上一步'
+    : '✍️ 起句阶段：每人写一句开头，之后会传给下一位画出来';
 }
 function picHideWork(){
   ['picPayloadText','picCanvasWrap','picPayloadDrawWrap','picPalette','picTools','picDrawBtns','picInputBox'].forEach(id=>{
     const e=$(id); if(e) e.style.display='none';
   });
 }
+function picProgressText(done,total){
+  return picState.duo ? (done>=1?'✅ 本步已完成':'⏳ 等待对方完成…') : '已完成 '+done+' / '+total;
+}
 function picOnTask(msg){
   const P=picState; if(P.over) return;
+  if(msg.duo!==undefined) P.duo=!!msg.duo;
   P.step=msg.step; P.rounds=msg.rounds||P.rounds; P.secs=msg.secs||P.secs; P.total=msg.total||P.total;
   P.task={step:msg.step,bookId:msg.bookId,kind:msg.kind,payload:msg.payload};
   show('screen-picpass');
@@ -4874,12 +4929,14 @@ function picSetupTask(){
   $('picBookNav').style.display='none'; $('picFooter').style.display='none';
   if(!t){ $('picTaskHint').textContent='⏳ 等待房主分发本步任务…'; return; }
   $('picStep').textContent=t.step===0?'起句':('第 '+t.step+' / '+P.rounds+' 步');
-  $('picProgress').textContent='已完成 0 / '+P.total;
+  $('picProgress').textContent=picProgressText(0,P.total);
   picStrokes=[];
   if(!picCtx) picInitCanvas();
   picClearLocal(); picBuildPalette();
   if(t.kind==='draw'){
-    $('picTaskHint').textContent='🎨 把这句话画出来（下一位只能看到你的画，看不到这句话）';
+    $('picTaskHint').textContent=P.duo
+      ? '🎨 双人轮流链：把这句话画出来，好友下一步只能看到这张画'
+      : '🎨 把这句话画出来（下一位只能看到你的画，看不到这句话）';
     const pt=$('picPayloadText'); pt.style.display='block';
     pt.textContent=t.payload&&t.payload.text?t.payload.text:'（上一位留白）';
     $('picCanvasWrap').style.display='block';
@@ -4888,7 +4945,9 @@ function picSetupTask(){
     $('picTextInput').style.display='none';
     $('picSubmitBtn').textContent='提交画作'; $('picSubmitBtn').disabled=false;
   }else{
-    $('picTaskHint').textContent=t.step===0?'✍️ 写一句开头（一个词或一句有趣的话）':'🔍 看看上一位画的是什么，写下你的猜测';
+    $('picTaskHint').textContent=P.duo
+      ? (t.step===0?'✍️ 双人轮流链：你先写一句开头，好友会把它画出来':'🔍 双人轮流链：看看好友画了什么，写下你接到的下一句')
+      : (t.step===0?'✍️ 写一句开头（一个词或一句有趣的话）':'🔍 看看上一位画的是什么，写下你的猜测');
     if(t.payload&&t.payload.type==='draw'){
       $('picPayloadDrawWrap').style.display='block';
       const cv=$('picPayloadCanvas'); const ctx=cv.getContext('2d');
@@ -4916,25 +4975,27 @@ function picSubmit(){
   P.task=null;
   picHideWork();
   $('picTaskHint').textContent='✅ 已提交，等待其他人完成…';
-  $('picProgress').textContent='已完成 1 / '+P.total;
+  $('picProgress').textContent=picProgressText(1,P.total);
   toHost({type:'pic_submit',step:t.step,bookId:t.bookId,entry,from:mySeat()});
 }
 function picBeginStep(step){
   const P=picState; if(!P.host||P.over) return;
   P.step=step; P.pending={}; P.done=0; P.advancing=false;
-  for(let i=0;i<P.seats.length;i++){
+  for(let i=0;i<P.books.length;i++){
     const prev=P.books[i].entries[P.books[i].entries.length-1];
     const kind=step===0?'text':(prev&&prev.type==='text'?'draw':'text');
     const payload=step===0?null:(prev||null);
-    const receiver=P.seats[(i+step)%P.seats.length];
-    emitSeat(receiver,{type:'pic_task',step,bookId:i,kind,payload,rounds:P.rounds,secs:P.secs,total:P.total});
+    // 双人轮流链：唯一一本在两人之间交替；多人：第 i 本按座位环形传递
+    const receiver=P.duo?P.seats[step%P.seats.length]:P.seats[(i+step)%P.seats.length];
+    emitSeat(receiver,{type:'pic_task',step,bookId:i,kind,payload,rounds:P.rounds,secs:P.secs,total:P.total,duo:P.duo});
   }
-  emitAll({type:'pic_step',step,rounds:P.rounds,total:P.total});
+  emitAll({type:'pic_step',step,rounds:P.rounds,total:P.total,duo:P.duo});
 }
 function picOnStep(msg){
-  const P=picState; P.step=msg.step; P.rounds=msg.rounds||P.rounds; P.total=msg.total||P.total; P.done=0;
+  const P=picState; if(msg.duo!==undefined) P.duo=!!msg.duo;
+  P.step=msg.step; P.rounds=msg.rounds||P.rounds; P.total=msg.total||P.total; P.done=0;
   $('picStep').textContent=msg.step===0?'起句':('第 '+msg.step+' / '+P.rounds+' 步');
-  $('picProgress').textContent='已完成 0 / '+P.total;
+  $('picProgress').textContent=picProgressText(0,P.total);
   picStartTimer();
 }
 function picStartTimer(){
@@ -4958,16 +5019,18 @@ function picOnSubmit(msg){
 }
 function picOnProgress(msg){
   const done=msg.done||0, total=msg.total||picState.total;
-  $('picProgress').textContent='已完成 '+done+' / '+total;
-  if(!picState.task&&!picState.over) $('picTaskHint').textContent='⏳ 已提交，还有 '+Math.max(0,total-done)+' 人未完成…';
+  $('picProgress').textContent=picProgressText(done,total);
+  if(!picState.task&&!picState.over) $('picTaskHint').textContent=picState.duo
+    ? '⏳ 已提交，等对方完成这一步…'
+    : '⏳ 已提交，还有 '+Math.max(0,total-done)+' 人未完成…';
 }
 function picAdvance(){
   const P=picState; if(!P.host||P.over||P.advancing) return;
   P.advancing=true; clearInterval(P.timerId);
-  for(let i=0;i<P.seats.length;i++){
+  for(let i=0;i<P.books.length;i++){
     const prev=P.books[i].entries[P.books[i].entries.length-1];
     const want=P.step===0?'text':(prev&&prev.type==='text'?'draw':'text');
-    const by=P.seats[(i+P.step)%P.seats.length];
+    const by=P.duo?P.seats[P.step%P.seats.length]:P.seats[(i+P.step)%P.seats.length];
     const fallback=want==='draw'?{type:'draw',strokes:[],by}:{type:'text',text:'（没接上，留白）',by};
     P.books[i].entries.push(P.pending[String(i)]||fallback);
   }
@@ -4986,11 +5049,18 @@ function picOnReveal(msg){
   P.revealBooks=(msg.books||[]).slice(); P.bookNo=0;
   picHideWork();
   $('picTimerLabel').textContent='';
-  $('picTaskHint').textContent='🎬 回放开始 · 看看最初那句话是怎么一步步跑偏的';
+  $('picTaskHint').textContent=P.duo
+    ? '🎬 双人轮流链完成 · 一起看看这条链是怎么跑偏的'
+    : '🎬 回放开始 · 看看最初那句话是怎么一步步跑偏的';
   $('picResult').style.display='block';
-  $('picResult').textContent='🎉 全部接龙完成！共 '+P.revealBooks.length+' 本';
-  $('picBooks').style.display='block'; $('picBookNav').style.display='flex'; $('picFooter').style.display='grid';
-  $('picStep').textContent='回放'; $('picProgress').textContent='完成 '+P.total+' / '+P.total;
+  $('picResult').textContent=P.duo
+    ? '🎉 双人轮流链接龙完成！一起看回放'
+    : '🎉 全部接龙完成！共 '+P.revealBooks.length+' 本';
+  $('picBooks').style.display='block';
+  $('picBookNav').style.display=P.revealBooks.length>1?'flex':'none';
+  $('picFooter').style.display='grid';
+  $('picStep').textContent='回放';
+  $('picProgress').textContent=P.duo?('共 '+(P.revealBooks[0]?P.revealBooks[0].entries.length:0)+' 步'):('完成 '+P.total+' / '+P.total);
   picRenderBook();
 }
 function picRenderBook(){
@@ -4998,10 +5068,12 @@ function picRenderBook(){
   box.innerHTML='';
   const b=books[P.bookNo]; if(!b) return;
   const card=document.createElement('div'); card.className='bookcard';
-  card.innerHTML='<div class="muted">📓 第 '+(P.bookNo+1)+' 本 · 由 '+esc(seatLabel(b.owner))+' 起句</div>';
+  card.innerHTML='<div class="muted">'+(P.duo
+    ? '📓 双人轮流链 · 由 '+esc(seatLabel(b.owner))+' 起句'
+    : '📓 第 '+(P.bookNo+1)+' 本 · 由 '+esc(seatLabel(b.owner))+' 起句')+'</div>';
   (b.entries||[]).forEach((e,i)=>{
     const d=document.createElement('div'); d.className='entry'+(e.type==='draw'?' draw':'');
-    const who='<span class="who">'+(i===0?'① 起句':(i%2===1?'② 画出来':'③ 猜一猜'))+' · '+esc(seatLabel(e.by))+'</span>';
+    const who='<span class="who">'+(i===0?'① 起句':(e.type==='draw'?'🎨 画出来':'✍️ 写一句'))+' · '+esc(seatLabel(e.by))+'</span>';
     if(e.type==='text'){ d.innerHTML=who+'<div>'+esc(e.text||'')+'</div>'; }
     else{
       const cv=document.createElement('canvas'); cv.className='picreplay'; cv.width=600; cv.height=420;
@@ -5021,8 +5093,8 @@ function picBookMove(d){
 function picOnMemberChange(seats){
   const P=picState; if(!P.host||P.over||App.game!=='picpass'||P.advancing) return;
   let changed=false;
-  for(let i=0;i<P.seats.length;i++){
-    const receiver=P.seats[(i+P.step)%P.seats.length];
+  for(let i=0;i<P.books.length;i++){
+    const receiver=P.duo?P.seats[P.step%P.seats.length]:P.seats[(i+P.step)%P.seats.length];
     if(seats.indexOf(receiver)<0&&P.pending[String(i)]===undefined){ P.pending[String(i)]=null; changed=true; }
   }
   if(!changed) return;
