@@ -4516,9 +4516,25 @@ function soupShowReveal(bottom){
    emitAll = 广播给其他人 + 房主本地同步应用，离线双人与在线多人都成立。
    ========================================================= */
 const GAME_MIN={ tongci:2, chain:2, draw:2, soup:2, spy:3, picpass:3 };
-function emitAll(msg){ broadcast(msg); receiveFromPeer(msg); }
-function emitSeat(seat,msg){ if(seat===mySeat()) receiveFromPeer(msg); else sendToSeat(seat,msg); }
-function toHost(msg){ if(App.role==='host') receiveFromPeer(msg); else sendToSeat('host',msg); }
+/* 两款新游戏是「房主下发状态」型：开局 / 发词 / 阶段切换必须按序到达。
+   普通 relaySend 是即发即忘的并发 POST，跨域或高延迟时可能乱序
+   （例如私密词先于 spy_start 到达，被开局重置清空）。
+   因此这里给控制消息单独串一条队列：等上一条 /api/send 返回再发下一条。
+   画猜的高频笔画仍走原来的并发通道，不受影响。 */
+let _ctrlRoom=null, _ctrlChain=Promise.resolve();
+function ctrlPost(msg,to){
+  const R=App.relay;
+  if(!R||!R.running){ if(App.transport!=='relay') sendToPeer(msg,to); return Promise.resolve(); }
+  if(_ctrlRoom!==R.room){ _ctrlRoom=R.room; _ctrlChain=Promise.resolve(); }
+  const body={room:R.room,role:R.role,data:msg};
+  if(to!==undefined&&to!==null&&to!=='') body.to=to;
+  _ctrlChain=_ctrlChain.catch(()=>{}).then(()=>relayPost('send',body))
+    .catch(e=>{ console.warn('relay send',e); });
+  return _ctrlChain;
+}
+function emitAll(msg){ ctrlPost(msg,'others'); receiveFromPeer(msg); }
+function emitSeat(seat,msg){ if(seat===mySeat()) receiveFromPeer(msg); else ctrlPost(msg,seat); }
+function toHost(msg){ if(App.role==='host') receiveFromPeer(msg); else ctrlPost(msg,'host'); }
 function multiLog(id,who,text){
   const box=$(id); if(!box) return;
   const d=document.createElement('div'); d.className='msg '+(who||'sys');
